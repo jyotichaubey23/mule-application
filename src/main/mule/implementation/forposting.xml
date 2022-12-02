@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="employeeInsertion" doc:id="b7f3bad8-501d-45a5-87e3-67003c42f21e" >
+		<db:insert doc:name="insertDetailsInSalaryTable" doc:id="57c480eb-1f34-439a-80af-3a438de90f09" config-ref="globalDatabaseCongig" >
+			<db:sql ><![CDATA[insert into employee_details values(:id,:name,:age,:number,:address)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id : payload.id,
+	name : payload.name,
+	age : payload.age,
+	number : payload.number,
+	address : payload.address
+	
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="b1206f5a-5e89-4bf6-97eb-82b6916f7bf6" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	
+	
+	<flow name="salaryInsertion" doc:id="a50c1b11-dd43-4802-80f5-d5e0bf37e60f" >
+		<db:insert doc:name="insertingDetailsInEmployee" doc:id="1389c95d-516e-4bd4-8593-b1838a3210e6" config-ref="globalDatabaseCongig" doc:description="Using this we will insert details fetching details from the body">
+			<db:sql ><![CDATA[insert into salary_details values(:id,:act,:bas,:inc,:incen)]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id: payload.id,
+	act: payload.act,
+	bas : payload.bas,
+	inc: payload.inc,
+	incen : payload.incen
+}]]]></db:input-parameters>
+		</db:insert>
+		<ee:transform doc:name="Transform Message" doc:id="dc8d3a0f-a0c8-4a49-856a-ccd6d34d26f7" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

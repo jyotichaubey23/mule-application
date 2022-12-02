@@ -1,0 +1,26 @@
+#%RAML 1.0 DataType
+
+
+
+example: !include ../examples/empolyeeRecord.json
+
+
+type: array
+items:
+  type: object
+  properties:
+    emp_id:
+      type: integer
+      required: true  
+    emp_name:
+      type: string
+      required: true
+    emp_age:
+      type: string
+      required: true
+    emp_address:
+      type: string
+      required: true
+    emp_number:
+      type: string
+      required: true

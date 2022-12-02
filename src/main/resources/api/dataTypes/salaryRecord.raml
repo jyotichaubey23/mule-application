@@ -1,0 +1,28 @@
+#%RAML 1.0 DataType
+
+
+
+
+
+example: !include ../examples/salaryRecord.json
+
+
+type: array
+items:
+  type: object
+  properties:
+    emp_id:
+      type: integer
+      required: true  
+    basic_pay:
+      type: string
+      required: true
+    actual_pay:
+      type: string
+      required: true
+    inc_per_year:
+      type: string
+      required: true
+    incentive:
+      type: string
+      required: true

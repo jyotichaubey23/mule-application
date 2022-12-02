@@ -1,0 +1,78 @@
+#%RAML 1.0
+title: empolyee-sys-api
+mediaType: [application/json]
+description: Employee api to add new employee and new salary, and to fetch all the records related to the each employye and salary
+version: v1
+
+securitySchemes:
+  securityCreatedScheme: !include security-schema//createdSecurityScheme.raml
+
+securedBy:
+  - securityCreatedScheme
+
+types:
+  empRecord: !include dataTypes/record.raml
+  newEmpRecord: !include dataTypes/newRecord.raml
+  salaryRecord: !include dataTypes/salaryRecord.raml
+
+  
+protocols: [HTTP]
+traits:
+  errorResponse: !include traits/errors.raml
+
+
+/employee:
+  post:
+    is: [errorResponse]
+    description: Create new empolyee account
+    body:
+      application/json:
+        type: newEmpRecord
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include examples/newRecordResponse.json
+  get:
+    is: [errorResponse]
+    description: fetch all data of all employee
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include examples/empolyeeRecord.json
+  /{id}:
+    get:
+      is: [errorResponse]
+      description: Fetch single data
+      responses:
+        200:
+          body:
+            application/json:
+                example: !include examples/singleEmpresp.json
+
+/salary:
+  post:
+    is: [errorResponse]
+    description: Adding new payment record
+    body:
+      application/json:
+    responses:
+      201:
+        body:
+          application/json:
+            example: !include examples/newRecordResponse.json
+  get:
+    is: [errorResponse]
+    description: fetch all the salary records
+    responses:
+      201:
+        body:
+          application/json:
+            example: !include examples/salaryRecord.json
+              
+
+    
+
+              
+

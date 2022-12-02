@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<flow name="Detailsfrombothtable" doc:id="528c46d5-635a-4920-9be5-64fe3e8c92aa" >
+		<scatter-gather doc:name="Getting the data from the database and presenting as one" doc:id="e4cb89aa-bbba-4549-bd8f-729826953a31" >
+			<route >
+				<db:select doc:name="getting the details from the employee_details table" doc:id="90c0f708-7821-47f1-b0ea-fdc3fa797dde" config-ref="globalDatabaseCongig" >
+					<db:sql ><![CDATA[SELECT * FROM employee_details;]]></db:sql>
+				</db:select>
+			</route>
+			<route >
+				<db:select doc:name="selecting the details from the salary_details table" doc:id="909c8a01-f64d-4229-a438-c2deeb2224ec" config-ref="globalDatabaseCongig" >
+					<db:sql ><![CDATA[SELECT * FROM salary_details;]]></db:sql>
+				</db:select>
+			</route>
+		</scatter-gather>
+		<ee:transform doc:name="Transform Message" doc:id="ca76999e-7e50-49cb-9b2b-ed38e3a92f7b" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+var a = payload pluck ((value, key, index) -> value.payload)
+---
+(flatten(a) orderBy ((item, index) -> item.emp_id)) groupBy ((item, index) -> item.emp_id)
+   pluck ((value, key, index) ->  value)
+   map (if (sizeOf($)>1)
+       $ reduce ((item, accumulator={}) -> accumulator - "emp_id" ++ (item))
+       else $[0]
+   )
+
+rderBy ((item, index) -> item.emp_id)]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	
+	
+	<flow name="specificSelectionOnTheBasisOfId" doc:id="7c1cbd3c-e086-4fad-8b4b-9a30f63003a9" >
+		<db:select doc:name="Specific Selections" doc:id="d1abf42e-3e74-4aab-8522-3cb30408411b" config-ref="globalDatabaseCongig">
+			<db:sql ><![CDATA[Select * from employee_details where emp_id =:id]]></db:sql>
+			<db:input-parameters ><![CDATA[#[{
+	id : attributes.uriParams.id
+}]]]></db:input-parameters>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="e7f0fbca-950e-455c-b353-a63405af78f2" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="fetchingsalarydetails" doc:id="92e97c73-3f03-46e5-bc7a-fc5cad52b6c6" >
+		<db:select doc:name="Specific Selections" doc:id="5768f2ae-d21c-4ca2-bd26-59ff7c9e86c1" config-ref="globalDatabaseCongig" >
+			<db:sql ><![CDATA[select * from salary_details]]></db:sql>
+		</db:select>
+		<ee:transform doc:name="Transform Message" doc:id="a8fba3bf-040c-4b96-8141-26ea1196aa99" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>

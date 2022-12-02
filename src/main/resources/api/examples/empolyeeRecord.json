@@ -1,0 +1,25 @@
+[
+  {
+
+  "emp_id":1,
+  "emp_name": "Jyoti chaubey",
+  "emp_age": "33",
+  "emp_address":"Mes colony,Ramgarh",
+  "emp_number":"09e759w65923"
+},
+ {
+
+  "emp_id":2,
+  "emp_name": "Kamal hassan",
+  "emp_age": "23",
+  "emp_address":"abc",
+  "emp_number":"09e759w65923"
+}, {
+
+  "emp_id":3,
+  "emp_name": "Diya bharti",
+  "emp_age": "20",
+  "emp_address":"xyz",
+  "emp_number":"09e759w65923"
+}
+]

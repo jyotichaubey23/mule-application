@@ -1,0 +1,14 @@
+#%RAML 1.0 SecurityScheme
+type: x-token-authorization
+
+description: For accessing security stuff.
+
+
+describedBy:
+  headers:
+    client-id:
+      type: string
+      required: true
+    client-secret:
+      type: string
+      required: true
